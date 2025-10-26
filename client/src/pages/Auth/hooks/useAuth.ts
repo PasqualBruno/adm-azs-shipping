@@ -1,24 +1,22 @@
 import { useCallback, useEffect, useState } from "react";
-import type { UserDTO } from "../../../interfaces/DTOs/DTOs"; // Ajuste o caminho se necessário
-import AuthRepository from "../../../repositories/AuthRepository"; // Ajuste o caminho se necessário
-// Suponha que você tenha um storage seguro para o token (AsyncStorage, SecureStore)
-import { getToken, removeToken, setToken } from "../utils/tokenStorage"; // Exemplo
+import type { IUserRegisterDTO } from "../../../interfaces/DTOs/DTOs";
+import type { IUSerBasic } from "../../../interfaces/interfaces";
+import AuthRepository from "../../../repositories/AuthRepository";
+import { getToken, removeToken, setToken } from "../../../utils/tokenStorage";
 
 const useAuth = () => {
-  const [loading, setLoading] = useState<boolean>(true); // Começa true para a verificação inicial
-  const [user, setUser] = useState<UserDTO | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<IUSerBasic | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null); // Estado para erros
+  const [error, setError] = useState<string | null>(null);
 
-  // Função para verificar se existe um token ao iniciar o app
   const checkAuthStatus = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const token = await getToken();
+      const token = getToken();
       if (token) {
-        // Se temos token, tentamos buscar o usuário (valida o token no backend)
-        const userData = await AuthRepository.getUser(); // Assumindo getUser usa o token (via interceptor ou header)
+        const userData = await AuthRepository.getUser();
         setUser(userData);
         setIsAuthenticated(true);
       } else {
@@ -36,22 +34,20 @@ const useAuth = () => {
     }
   }, []);
 
-  // Executa a verificação inicial quando o hook é montado
   useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  async function register(userData: UserDTO) {
+  async function register(userData: IUserRegisterDTO) {
     setLoading(true);
     setError(null);
     try {
-      await AuthRepository.register(userData);
-      // Opcional: fazer login automaticamente após o registro?
-      // await login(userData.username, userData.password); // Assumindo username/password
+      const response = await AuthRepository.register(userData);
+      return response;
     } catch (err: any) {
       console.error("Erro no registro:", err);
       setError(err.message || "Falha ao registrar.");
-      throw err; // Relança para o componente, se necessário
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -62,16 +58,15 @@ const useAuth = () => {
     setError(null);
     try {
       const response = await AuthRepository.login(userName, password);
-      // Supondo que a resposta tenha { token, user }
-      await setToken(response.token); // Salva o token
-      setUser(response.user);
+      await setToken(response.data.token);
+      setUser(response.data.user);
       setIsAuthenticated(true);
     } catch (err: any) {
       console.error("Erro no login:", err);
       setError(err.message || "Falha ao fazer login.");
       setIsAuthenticated(false);
       setUser(null);
-      throw err; // Relança para o componente, se necessário
+      throw err;
     } finally {
       setLoading(false);
     }

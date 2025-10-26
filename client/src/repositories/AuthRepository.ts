@@ -1,5 +1,7 @@
 import axios from "axios";
-import type { UserDTO } from "../interfaces/DTOs/DTOs";
+import type { IUserRegisterDTO } from "../interfaces/DTOs/DTOs";
+import type { ILoginResponse } from "../interfaces/Responses/Responses";
+import { getToken } from "../utils/tokenStorage";
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -11,17 +13,36 @@ if (!baseURL) {
 
 const api = axios.create({ baseURL });
 
-const AuthRepoitory = {
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken();
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+const AuthRepository = {
   async login(userName: string, password: string) {
-    return api.post("/login", { userName, password });
+    return await api.post<ILoginResponse>("/login", { userName, password });
   },
 
-  async register(user: UserDTO) {
-    return api.post("/register", user);
+  async register(user: IUserRegisterDTO) {
+    return await api.post<{ message: string }>("/register", user);
   },
-  async logout() {},
-  async isLogedIn() {},
-  async getUser() {},
+
+  async logout() {
+    return await api.post("/logout");
+  },
+
+  async getUser() {
+    return await api.get("/user");
+  },
 };
 
-export default AuthRepoitory;
+export default AuthRepository; // Renomeado para seguir convenção

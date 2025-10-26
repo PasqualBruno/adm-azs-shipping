@@ -1,7 +1,10 @@
 import { LockIcon, UserIcon } from "@phosphor-icons/react";
 import { Button, Flex, Form, Image, Input, Typography } from "antd";
+import { toast } from "react-toastify";
+import type { IUserRegisterDTO } from "../../../interfaces/DTOs/DTOs";
 import { formMode } from "../../../interfaces/interfaces";
 import { COLORS } from "../../../utils/colots";
+import useAuth from "../hooks/useAuth";
 import Logo from "/public/logoandtext.svg";
 
 type RegisterFormProps = {
@@ -9,85 +12,145 @@ type RegisterFormProps = {
 };
 
 const RegisterForm = ({ setMode }: RegisterFormProps) => {
-  const handleRegisterSubmit = (values: any) => {
-    console.log("Validação passou! Dados do formulário:", values);
-  };
+  const { register, loading } = useAuth();
+  const [form] = Form.useForm<IUserRegisterDTO>();
+
+  async function handleRegisterSubmit(values: any) {
+    try {
+      const newUser: IUserRegisterDTO = {
+        userName: values.userName,
+        name: values.name,
+        password: values.password,
+      };
+      const response = await register(newUser);
+
+      toast.success(
+        response?.data?.message || "Cadastro realizado com sucesso!"
+      );
+      form.resetFields();
+      setMode(formMode.login);
+    } catch (error: any) {
+      console.error("Erro ao registrar:", error);
+
+      const errorMessage =
+        error.response?.data?.message || "Falha ao registrar.";
+      const errorStatus = error.response?.status;
+
+      if (
+        errorStatus === 409 ||
+        errorMessage.toLowerCase().includes("usuário já cadastrado")
+      ) {
+        toast.error("Este nome de usuário já está em uso.");
+        form.setFields([
+          {
+            name: "userName",
+            errors: ["Este nome de usuário já está em uso."],
+          },
+        ]);
+      } else {
+        toast.error(errorMessage);
+      }
+    }
+  }
 
   return (
-    <Form
-      layout="vertical"
-      className="login-form"
-      onFinish={handleRegisterSubmit}
-      autoComplete="off"
-    >
-      <Flex className="login-logo" align="center" justify="center">
-        <Image height={120} width={120} src={Logo} />
-      </Flex>
-
-      <Typography.Title level={1}>Cadastrar</Typography.Title>
-
-      <Form.Item
-        label="Usuario"
-        name="username"
-        rules={[{ required: true, message: "O campo Usuario é obrigatorio" }]}
+    <>
+      <Form
+        form={form}
+        layout="vertical"
+        className="login-form"
+        onFinish={handleRegisterSubmit}
+        autoComplete="off"
       >
-        <Input
-          prefix={<UserIcon size={16} color={COLORS.formIcons} />}
-          type="text"
-          placeholder="Digite seu Usuario"
-        />
-      </Form.Item>
+        <Flex className="login-logo" align="center" justify="center">
+          <Image height={120} width={120} src={Logo} />
+        </Flex>
 
-      <Form.Item
-        label="Senha"
-        name="password"
-        rules={[
-          { required: true, message: "A senha é obrigatória!" },
-          { min: 6, message: "A senha deve ter no mínimo 6 caracteres!" },
-        ]}
-      >
-        <Input.Password
-          prefix={<LockIcon size={16} color={COLORS.formIcons} />}
-          placeholder="Digite sua senha"
-        />
-      </Form.Item>
+        <Typography.Title level={1}>Cadastrar</Typography.Title>
 
-      <Form.Item
-        label="Confirmar Senha"
-        name="confirmPassword"
-        dependencies={["password"]}
-        rules={[
-          { required: true, message: "Confirme sua senha!" },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
-              if (!value || getFieldValue("password") === value) {
-                return Promise.resolve();
-              }
-              return Promise.reject(new Error("As senhas não coincidem!"));
-            },
-          }),
-        ]}
-      >
-        <Input.Password
-          prefix={<LockIcon size={16} color={COLORS.formIcons} />}
-          placeholder="Confirme sua senha"
-        />
-      </Form.Item>
-
-      <Button className="primary-button" type="primary" htmlType="submit">
-        Cadastrar
-      </Button>
-
-      <p className=" text-center pt-2">
-        Já possui uma conta?{" "}
-        <span
-          onClick={() => setMode(formMode.login)}
-          className="text-[#ee2143] cursor-pointer"
+        <Form.Item
+          label="Usuario"
+          name="userName"
+          rules={[{ required: true, message: "O campo Usuario é obrigatorio" }]}
         >
-          Entrar
-        </span>
-      </p>
-    </Form>
+          <Input
+            prefix={<UserIcon size={16} color={COLORS.formIcons} />}
+            type="text"
+            placeholder="Digite seu Usuario"
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Nome"
+          name="name"
+          rules={[
+            { required: true, message: "O campo de nome é obrigatório" },
+            { min: 3, message: "O nome deve ter no mínimo 3 caracteres!" },
+          ]}
+        >
+          <Input
+            prefix={<UserIcon size={16} color={COLORS.formIcons} />}
+            type="text"
+            placeholder="Digite o seu nome"
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Senha"
+          name="password"
+          rules={[
+            { required: true, message: "A senha é obrigatória!" },
+            { min: 6, message: "A senha deve ter no mínimo 6 caracteres!" },
+          ]}
+        >
+          <Input.Password
+            prefix={<LockIcon size={16} color={COLORS.formIcons} />}
+            placeholder="Digite sua senha"
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Confirmar Senha"
+          name="confirmPassword"
+          dependencies={["password"]}
+          rules={[
+            { required: true, message: "Confirme sua senha!" },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue("password") === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error("As senhas não coincidem!"));
+              },
+            }),
+          ]}
+        >
+          <Input.Password
+            prefix={<LockIcon size={16} color={COLORS.formIcons} />}
+            placeholder="Confirme sua senha"
+          />
+        </Form.Item>
+
+        <Button
+          loading={loading}
+          className="primary-button"
+          type="primary"
+          htmlType="submit"
+        >
+          Cadastrar
+        </Button>
+
+        <p className=" text-center pt-2">
+          Já possui uma conta?{" "}
+          <span
+            onClick={() => setMode(formMode.login)}
+            className="text-[#ee2143] cursor-pointer"
+          >
+            Entrar
+          </span>
+        </p>
+      </Form>
+    </>
   );
 };
 

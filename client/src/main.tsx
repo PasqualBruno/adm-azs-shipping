@@ -1,8 +1,9 @@
-import { ConfigProvider } from "antd";
+import { App as AntdApp, ConfigProvider } from "antd";
 import "antd/dist/reset.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
+import "react-toastify/dist/ReactToastify.css";
+import App from "./App";
 
 const theme = {
   token: {
@@ -18,7 +19,9 @@ const theme = {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ConfigProvider theme={theme}>
-      <App />
+      <AntdApp>
+        <App />
+      </AntdApp>
     </ConfigProvider>
   </StrictMode>
 );
