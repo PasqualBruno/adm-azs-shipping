@@ -24,8 +24,7 @@ const useAuth = () => {
         setUser(null);
       }
     } catch (err) {
-      // Se getToken falhar ou getUser falhar (token inválido/expirado)
-      await removeToken(); // Limpa token inválido
+      await removeToken();
       setIsAuthenticated(false);
       setUser(null);
       console.error("Erro ao verificar status de autenticação:", err);
@@ -89,16 +88,14 @@ const useAuth = () => {
   }
 
   return {
-    // Estado
     loading,
     user,
     isAuthenticated,
     error,
-    // Ações
     register,
     login,
     logout,
-    checkAuthStatus, // Pode ser útil retornar para um "refresh" manual
+    checkAuthStatus,
   };
 };
 

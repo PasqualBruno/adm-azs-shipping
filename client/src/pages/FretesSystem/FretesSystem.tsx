@@ -30,12 +30,12 @@ const FretesSystem = () => {
   };
 
   const menuItems = [
+    { key: "/sistema/campos", icon: <MapPinIcon size={20} />, label: "Campos" },
     {
       key: "/sistema/empresas",
       icon: <BuildingIcon size={20} />,
       label: "Empresas",
     },
-    { key: "/sistema/campos", icon: <MapPinIcon size={20} />, label: "Campos" },
     { key: "/sistema/fretes", icon: <TruckIcon size={20} />, label: "Fretes" },
     {
       key: "logout",

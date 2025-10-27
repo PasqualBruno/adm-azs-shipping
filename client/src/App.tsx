@@ -30,12 +30,12 @@ function App() {
       <ToastContainer
         position="top-right"
         autoClose={2000}
-        hideProgressBar={false}
+        hideProgressBar={true}
         newestOnTop={false}
         closeOnClick
         pauseOnHover
         draggable
-        theme="dark"
+        theme="light"
         transition={Zoom}
       />
     </BrowserRouter>

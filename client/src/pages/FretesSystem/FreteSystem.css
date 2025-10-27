@@ -7,6 +7,7 @@
   flex-direction: column;
   justify-content: space-between;
   background-color: var(--bgMenu) !important;
+  padding-top: 1.2rem;
 }
 
 .fretes-sider-top {
@@ -18,10 +19,11 @@
   height: 64px;
   display: flex;
   align-items: center;
-  justify-content: center;
+
+  padding: 2.8rem 2rem;
   color: white;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 24px;
 }
 
 .custom-menu {
@@ -83,7 +85,7 @@
 /* Conteúdo principal */
 .fretes-content {
   margin: 16px;
-  background: #fff;
+  background: #ffff;
   padding: 24px;
   border-radius: 8px;
 }
