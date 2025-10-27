@@ -46,14 +46,22 @@ const LoginForm = ({ setMode }: LoginFormProps) => {
       </Flex>
       <Typography.Title level={1}>Entrar</Typography.Title>
 
-      <Form.Item label="Usuario" name="userName">
+      <Form.Item
+        label="Usuario"
+        name="userName"
+        rules={[{ required: true, message: "Por favor, informe um usuário" }]}
+      >
         <Input
           prefix={<UserIcon size={16} color={COLORS.formIcons} />}
           type="text"
           placeholder="Digite seu Usuario"
         />
       </Form.Item>
-      <Form.Item label="Senha" name="password">
+      <Form.Item
+        label="Senha"
+        name="password"
+        rules={[{ required: true, message: "Por favor, informe uma senha" }]}
+      >
         <Input
           prefix={<LockIcon size={16} color={COLORS.formIcons} />}
           type="password"
