@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+:root {
+  --bgMenu: #130021;
+  --primary: #ee2143;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",

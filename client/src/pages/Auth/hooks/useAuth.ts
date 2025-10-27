@@ -73,15 +73,14 @@ const useAuth = () => {
   }
 
   async function logout() {
-    setLoading(true); // Pode adicionar loading aqui também
+    setLoading(true);
     setError(null);
     try {
-      // Tenta chamar a API de logout (opcional, depende do seu backend)
-      // await AuthRepository.logout();
+      await AuthRepository.logout();
+      await removeToken();
     } catch (err) {
       console.error("Erro na API de logout (ignorado):", err);
     } finally {
-      // Ação principal é limpar o estado local e o token
       await removeToken();
       setUser(null);
       setIsAuthenticated(false);
