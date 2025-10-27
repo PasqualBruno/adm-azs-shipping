@@ -1,5 +1,6 @@
 import { LockIcon, UserIcon } from "@phosphor-icons/react";
 import { Button, Flex, Form, Image, Input, Typography } from "antd";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import type { IUserLoginDTO } from "../../../interfaces/DTOs/DTOs";
 import { formMode } from "../../../interfaces/interfaces";
@@ -14,8 +15,11 @@ type LoginFormProps = {
 const LoginForm = ({ setMode }: LoginFormProps) => {
   const { login, loading, isAuthenticated } = useAuth();
   const [form] = Form.useForm<IUserLoginDTO>();
+  const navigate = useNavigate();
 
-  console.log(isAuthenticated);
+  if (isAuthenticated) {
+    navigate("/sistema/empresas");
+  }
 
   async function handleLoginSubmit(values: IUserLoginDTO) {
     console.log(values);
