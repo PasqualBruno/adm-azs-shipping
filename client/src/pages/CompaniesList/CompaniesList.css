@@ -1,0 +1,48 @@
+.companies-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.companies-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.company-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.company-logo {
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.company-name-table {
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.companies-action-button {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.companies-action-button span {
+  color: var(--primary);
+}
+
+.company-name-modal {
+  font-weight: 500;
+  color: var(--primary);
+}
