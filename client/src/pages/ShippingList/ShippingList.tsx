@@ -8,15 +8,13 @@ import {
   Modal,
   Table,
   type FormInstance,
-  type TableProps, // 1. Importar TableProps para a tipagem do handleTableChange
+  type TableProps,
 } from "antd";
 import { useEffect, useState } from "react";
 
-// Importações de Tipos
 import type { IShippingCreateDTO } from "../../interfaces/DTOs/DTOs";
 import type { IShippingResponse } from "../../interfaces/Responses/Responses";
 
-// Importações de Componentes e Hooks
 import ShippingEditForm from "./components/ShippingEditForm/ShippingEditForm";
 import ShippingForm from "./components/ShippingForm/ShippingForm";
 import useShipping from "./hooks/useShipping";
@@ -54,14 +52,9 @@ const ShippingList = () => {
     onEditClick: handleEditClick,
   });
 
-  // 2. Este useEffect agora lida com a busca
-  // Ele roda na montagem (com searchText = "") e
-  // novamente toda vez que 'searchText' mudar.
   useEffect(() => {
-    // A função 'fetchShipping' já é debounced dentro do hook
-    // Reseta para a página 1 toda vez que uma nova busca é feita
     fetchShipping({ search: searchText, page: 1 });
-  }, [searchText, fetchShipping]); // Depende de searchText
+  }, [searchText, fetchShipping]);
 
   const handleCloseCreateModal = () => {
     setIsCreateModalOpen(false);

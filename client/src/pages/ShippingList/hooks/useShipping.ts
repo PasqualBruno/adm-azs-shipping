@@ -15,12 +15,12 @@ const useShipping = () => {
     data: [],
     total: 0,
     page: 1,
-    limit: 10,
+    limit: 5,
   });
-  const [loadingFetch, setLoadingFetch] = useState(false);
+  const [loadingFetch, setLoadingFetch] = useState(true);
   const [loadingAction, setLoadingAction] = useState(false);
 
-  const lastParams = useRef<FetchParams>({ page: 1, limit: 10, search: "" });
+  const lastParams = useRef<FetchParams>({ page: 1, limit: 5, search: "" });
 
   const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fetchShipping = useCallback(async (params?: FetchParams) => {
@@ -39,7 +39,10 @@ const useShipping = () => {
         setLoadingFetch(true);
         try {
           const response = await ShippingRepository.fetchShipping(finalParams);
-          setShippings(response.data);
+          setShippings({
+            ...response.data,
+            limit: finalParams.limit || 5,
+          });
           resolve(response.data);
         } catch (err: any) {
           console.error("Erro ao buscar frete:", err);

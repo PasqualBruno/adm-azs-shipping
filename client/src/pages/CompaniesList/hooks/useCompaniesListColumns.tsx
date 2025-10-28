@@ -3,7 +3,7 @@ import {
   PencilSimpleLineIcon,
   TrashIcon,
 } from "@phosphor-icons/react";
-import { Avatar, Button, Checkbox, Flex, Modal, Tooltip } from "antd";
+import { Avatar, Button, Checkbox, Flex, Modal, Tag, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { AxiosResponse } from "axios";
 import React, { useState } from "react";
@@ -63,6 +63,15 @@ const useCompaniesListColumns = ({
       width: 80,
       dataIndex: "id",
       key: "id",
+      render: (id: string, record: ICompanyResponse) => {
+        console.log(record);
+
+        return (
+          <Tag style={{ fontWeight: 500 }}>
+            COD-{record._id.substring(0, 8)}
+          </Tag>
+        );
+      },
     },
     {
       title: "Nome",

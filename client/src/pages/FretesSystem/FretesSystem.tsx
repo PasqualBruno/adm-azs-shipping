@@ -55,7 +55,6 @@ const FretesSystem = () => {
 
   return (
     <Layout className="fretes-layout">
-      {/* Menu lateral desktop */}
       {!isMobile && (
         <Sider
           collapsible
@@ -66,7 +65,11 @@ const FretesSystem = () => {
           trigger={null}
         >
           <div className="fretes-sider-top">
-            <div className="fretes-logo">FRETES</div>
+            {
+              <div className={`fretes-logo ${collapsed ? "opacity-0" : ""}`}>
+                FRETES
+              </div>
+            }
             <Menu
               mode="inline"
               selectedKeys={[location.pathname]}

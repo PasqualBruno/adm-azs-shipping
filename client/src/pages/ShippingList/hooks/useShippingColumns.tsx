@@ -53,11 +53,17 @@ const useShippingColumns = ({
       title: "Código",
       dataIndex: "_id",
       key: "_id",
-      width: 100,
-      render: (id: string) =>
+      width: 130,
+      render: (id: string, record) =>
         renderValue(
           <Tag style={{ fontWeight: 500 }}>
-            {id ? `COD${id.substring(id.length - 3).toUpperCase()}` : null}
+            {id
+              ? `COD-${
+                  record._id
+                    ? `${record._id.substring(0, 8).toUpperCase()}`
+                    : null
+                }`
+              : null}
           </Tag>
         ),
     },
@@ -201,7 +207,11 @@ const useShippingColumns = ({
 
 export default useShippingColumns;
 
-const renderValue = (value: any, unit?: string, isNumber: boolean = false) => {
+export const renderValue = (
+  value: any,
+  unit?: string,
+  isNumber: boolean = false
+) => {
   if (value === null || value === undefined || value === false) {
     return <div style={{ textAlign: "center" }}>-</div>;
   }
