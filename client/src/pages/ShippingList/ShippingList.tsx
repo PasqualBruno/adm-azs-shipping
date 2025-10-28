@@ -8,12 +8,15 @@ import {
   Modal,
   Table,
   type FormInstance,
+  type TableProps, // 1. Importar TableProps para a tipagem do handleTableChange
 } from "antd";
 import { useEffect, useState } from "react";
 
+// Importações de Tipos
 import type { IShippingCreateDTO } from "../../interfaces/DTOs/DTOs";
 import type { IShippingResponse } from "../../interfaces/Responses/Responses";
 
+// Importações de Componentes e Hooks
 import ShippingEditForm from "./components/ShippingEditForm/ShippingEditForm";
 import ShippingForm from "./components/ShippingForm/ShippingForm";
 import useShipping from "./hooks/useShipping";
@@ -51,9 +54,14 @@ const ShippingList = () => {
     onEditClick: handleEditClick,
   });
 
+  // 2. Este useEffect agora lida com a busca
+  // Ele roda na montagem (com searchText = "") e
+  // novamente toda vez que 'searchText' mudar.
   useEffect(() => {
-    fetchShipping();
-  }, [fetchShipping]);
+    // A função 'fetchShipping' já é debounced dentro do hook
+    // Reseta para a página 1 toda vez que uma nova busca é feita
+    fetchShipping({ search: searchText, page: 1 });
+  }, [searchText, fetchShipping]); // Depende de searchText
 
   const handleCloseCreateModal = () => {
     setIsCreateModalOpen(false);
@@ -64,6 +72,16 @@ const ShippingList = () => {
     setIsEditModalOpen(false);
     editForm.resetFields();
     setSelectedShipping(null);
+  };
+
+  const handleTableChange: TableProps<IShippingResponse>["onChange"] = (
+    pagination
+  ) => {
+    fetchShipping({
+      page: pagination.current,
+      limit: pagination.pageSize,
+      search: searchText,
+    });
   };
 
   return (
@@ -144,6 +162,12 @@ const ShippingList = () => {
         scroll={{ x: 1000 }}
         columns={columns}
         dataSource={shippings.data}
+        onChange={handleTableChange}
+        pagination={{
+          current: shippings.page,
+          pageSize: shippings.limit,
+          total: shippings.total,
+        }}
         locale={{
           emptyText: (
             <div>
