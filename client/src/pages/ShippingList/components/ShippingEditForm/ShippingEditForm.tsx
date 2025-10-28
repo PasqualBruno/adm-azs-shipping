@@ -1,7 +1,7 @@
 import { Avatar, Flex, Form, Input, Select, type FormInstance } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-// Importações de Tipos
+
 import type {
   ICompanyResponse,
   IShippingResponse,
@@ -27,13 +27,9 @@ const ShippingEditForm = ({
 }: ShippingEditFormProps) => {
   const { companies, fetchCompanies } = useCompanies();
 
-  console.log({ companies });
-
   const [selectedCompany, setSelectedCompany] = useState<
     ICompanyResponse | undefined
   >(companies.find((c) => c._id === selectedShipping.company._id));
-
-  console.log({ selectedCompany });
 
   useEffect(() => {
     fetchCompanies();
@@ -74,7 +70,7 @@ const ShippingEditForm = ({
     try {
       await edit(selectedShipping._id, payload);
       toast.success("Frete atualizado com sucesso!");
-      onSuccess(); // Chama 'handleCloseEditModal' (que faz o reset)
+      onSuccess();
     } catch (err: any) {
       console.error("Erro ao atualizar frete:", err);
       toast.error(err?.response?.data?.message || "Erro ao atualizar frete.");

@@ -48,7 +48,6 @@ const useShippingColumns = ({
     }
   }
 
-  // Definição das colunas da tabela
   const columns: ColumnsType<IShippingResponse> = [
     {
       title: "Código",

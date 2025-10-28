@@ -1,14 +1,14 @@
 import { Avatar, Flex, Form, Input, Select, type FormInstance } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-// Importações de Tipos
+
 import type { IShippingCreateDTO } from "../../../../interfaces/DTOs/DTOs";
 import {
   estadoFrete,
   type IShippingFormValues,
 } from "../../../../interfaces/interfaces";
 import type { ICompanyResponse } from "../../../../interfaces/Responses/Responses";
-// Importações de Hooks
+
 import useCompanies from "../../../CompaniesList/hooks/useCompanies";
 
 type ShippingFormProps = {
@@ -47,7 +47,7 @@ const ShippingForm = ({ form, onSuccess, create }: ShippingFormProps) => {
     try {
       await create(payload);
       toast.success("Frete criado com sucesso!");
-      onSuccess(); // Chama 'handleCloseCreateModal' (que faz o reset)
+      onSuccess();
     } catch (err: any) {
       console.error("Erro ao criar frete:", err);
       toast.error(err?.response?.data?.message || "Erro ao criar frete.");

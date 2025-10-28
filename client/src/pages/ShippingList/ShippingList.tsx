@@ -10,10 +10,9 @@ import {
   type FormInstance,
 } from "antd";
 import { useEffect, useState } from "react";
-// Importações de Tipos
+
 import type { IShippingCreateDTO } from "../../interfaces/DTOs/DTOs";
 import type { IShippingResponse } from "../../interfaces/Responses/Responses";
-// Importações de Componentes e Hooks
 
 import ShippingEditForm from "./components/ShippingEditForm/ShippingEditForm";
 import ShippingForm from "./components/ShippingForm/ShippingForm";
@@ -21,7 +20,6 @@ import useShipping from "./hooks/useShipping";
 import useShippingColumns from "./hooks/useShippingColumns";
 
 const ShippingList = () => {
-  // Estados para os modais
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 

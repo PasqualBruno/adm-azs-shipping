@@ -9,7 +9,7 @@ export const mockData: IShippingResponse[] = [
       name: "Transportadora Rápida",
       image:
         "https://img.freepik.com/vetores-gratis/modelo-de-logotipo-colorido-da-empresa-com-slogan_23-2148802643.jpg?semt=ais_hybrid&w=740&q=80",
-      // ...outros campos de company
+
       peso: true,
       volume: true,
       tipoCarga: true,
@@ -33,7 +33,7 @@ export const mockData: IShippingResponse[] = [
       name: "Logística Total",
       image:
         "https://marketplace.canva.com/EAFtCLwiJmY/1/0/1600w/canva-amarelo-e-preto-minimalista-seguran%C3%A7a-residencial-logo-sxDdso97-hk.jpg",
-      // ...outros campos de company
+
       peso: true,
       volume: true,
       tipoCarga: true,
