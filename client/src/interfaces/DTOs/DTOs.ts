@@ -18,4 +18,5 @@ export interface ICompanyCreateDTO {
   origem: boolean;
   destino: boolean;
   distancia: boolean;
+  archived: boolean;
 }

@@ -3,6 +3,11 @@ export enum formMode {
   register = "register",
 }
 
+export enum companyFormMode {
+  create = "create",
+  edit = "edit",
+}
+
 export interface IUSerBasic {
   id: number;
   name: string;

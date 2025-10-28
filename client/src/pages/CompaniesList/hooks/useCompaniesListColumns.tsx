@@ -1,20 +1,59 @@
-import { PencilSimpleLineIcon, TrashIcon } from "@phosphor-icons/react";
-import { Button, Checkbox, Flex, Image, Modal, Tooltip } from "antd";
+import {
+  ArchiveIcon,
+  PencilSimpleLineIcon,
+  TrashIcon,
+} from "@phosphor-icons/react";
+import {
+  Image as AntdImage,
+  Button,
+  Checkbox,
+  Flex,
+  Modal,
+  Tooltip,
+} from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { useState } from "react";
+import type { AxiosResponse } from "axios";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
+import type { ICompanyResponse } from "../../../interfaces/Responses/Responses";
 import { COLORS } from "../../../utils/colots";
 import useCompanies from "./useCompanies";
 
-const useCompaniesListColumns = () => {
+type useCompaniesListColumnsProps = {
+  handleEditClick: (Company: ICompanyResponse) => void;
+  fetchCompanies(): Promise<AxiosResponse<ICompanyResponse[], any, {}>>;
+};
+
+const useCompaniesListColumns = ({
+  handleEditClick,
+  fetchCompanies,
+}: useCompaniesListColumnsProps) => {
   const { remove, update } = useCompanies();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [modalMode, setModalMode] = useState<"remove" | "archive">("remove");
+  const [modalText, setModalText] = useState<React.ReactNode>();
+
+  async function handleArchiveCompany(id: string) {
+    setLoading(true);
+    try {
+      await update(id, { archived: true });
+      await fetchCompanies();
+      toast.success("Empresa arquivada com sucesso!");
+    } catch (err: any) {
+      console.error("Erro ao arquivar empresa:", err);
+      toast.error(err?.response?.data?.message || "Erro ao arquivar empresa.");
+    } finally {
+      setLoading(false);
+      setOpen(false);
+    }
+  }
 
   async function handleRemoveCompany(id: string) {
     setLoading(true);
     try {
       await remove(id);
+      await fetchCompanies();
       toast.success("Empresa removida com sucesso!");
     } catch (err: any) {
       console.error("Erro ao remover empresa:", err);
@@ -37,31 +76,38 @@ const useCompaniesListColumns = () => {
       dataIndex: "name",
       key: "name",
       width: 200,
-      render: (_: any, record: any) => (
-        <div className="company-cell">
-          <Image
-            height={40}
-            width={40}
-            src={record.image}
-            alt={record.name}
-            className="company-logo"
-            preview={false}
-          />
-          <span className="company-name-table">{record.name}</span>
-        </div>
-      ),
+      render: (_: any, record: ICompanyResponse) => {
+        console.log(record.image);
+
+        return (
+          <div className="company-cell">
+            {record.image && (
+              <AntdImage
+                height={40}
+                width={40}
+                fallback={"https://linkconsolidai.com.br/assets/imgs/empty.jpg"}
+                src={record.image}
+                alt={"Imagem da empresa " + record.name}
+                className="company-logo"
+                preview={false}
+              />
+            )}
+            <span className="company-name-table">{record.name}</span>
+          </div>
+        );
+      },
     },
 
     {
       title: "Peso",
-      width: 70,
+      width: 80,
       dataIndex: "peso",
       key: "peso",
       render: (value: boolean) => <Checkbox checked={value} disabled />,
     },
     {
       title: "Volume",
-      width: 70,
+      width: 80,
       dataIndex: "volume",
       key: "volume",
       render: (value: boolean) => <Checkbox checked={value} disabled />,
@@ -69,21 +115,21 @@ const useCompaniesListColumns = () => {
 
     {
       title: "Origem",
-      width: 70,
+      width: 80,
       dataIndex: "origem",
       key: "origem",
       render: (value: boolean) => <Checkbox checked={value} disabled />,
     },
     {
       title: "Destino",
-      width: 70,
+      width: 80,
       dataIndex: "destino",
       key: "destino",
       render: (value: boolean) => <Checkbox checked={value} disabled />,
     },
     {
       title: "Distância",
-      width: 80,
+      width: 90,
       dataIndex: "distancia",
       key: "distancia",
       render: (value: boolean) => <Checkbox checked={value} disabled />,
@@ -97,32 +143,82 @@ const useCompaniesListColumns = () => {
     },
     {
       title: "Ações",
-      width: 100,
+      width: 130,
       fixed: "right",
       key: "acoes",
-      render: (_: any, record: any) => (
+      render: (_: any, record: ICompanyResponse) => (
         <Flex>
           <Tooltip title="Editar">
-            <Button type="text" className="companies-action-button">
-              <PencilSimpleLineIcon color={COLORS.primary} size={16} />
+            <Button
+              type="text"
+              className="companies-action-button"
+              onClick={() => handleEditClick(record)}
+            >
+              <PencilSimpleLineIcon color={COLORS.primary} size={20} />
+            </Button>
+          </Tooltip>
+          <Tooltip title="Arquivar">
+            <Button
+              type="text"
+              className="companies-action-button"
+              onClick={() => {
+                setModalMode("archive");
+                setModalText(
+                  <Flex vertical>
+                    <span>
+                      Deseja arquivar a empresa{" "}
+                      <span className="company-name-modal">
+                        {record.name} ?{" "}
+                      </span>
+                    </span>
+                    <span className=" opacity-50">
+                      Essa ação irá desativar a empresa e a mesma não poderá ser
+                      utilizada em fretes.
+                    </span>
+                  </Flex>
+                );
+                setOpen(true);
+              }}
+            >
+              <ArchiveIcon color={COLORS.primary} size={20} />
             </Button>
           </Tooltip>
           <Tooltip title="Excluir">
             <Button
               type="text"
               className="companies-action-button"
-              onClick={() => setOpen(true)}
+              onClick={() => {
+                setModalMode("remove");
+                setModalText(
+                  <Flex vertical>
+                    <span>
+                      Deseja remover a empresa{" "}
+                      <span className="company-name-modal">
+                        {record.name} ?{" "}
+                      </span>
+                    </span>
+                    <span className=" opacity-50">
+                      Essa ação apenas poderá ser feita se não houver fretes
+                      cadastrados para ela.
+                    </span>
+                  </Flex>
+                );
+                setOpen(true);
+              }}
             >
-              <TrashIcon color={COLORS.primary} size={16} />
+              <TrashIcon color={COLORS.primary} size={20} />
             </Button>
           </Tooltip>
           <Modal
             confirmLoading={loading}
-            okText="Deletar"
+            okText={modalMode === "archive" ? "Arquivar" : "Remover"}
             cancelText="Cancelar"
             open={open}
             title="Tem certeza"
-            onOk={() => handleRemoveCompany(record.id)}
+            onOk={() => {
+              if (modalMode === "archive") handleArchiveCompany(record._id!);
+              else if (modalMode === "remove") handleRemoveCompany(record._id!);
+            }}
             onCancel={() => setOpen(false)}
             footer={(_, { OkBtn, CancelBtn }) => (
               <>
@@ -131,10 +227,7 @@ const useCompaniesListColumns = () => {
               </>
             )}
           >
-            <p>
-              Você realmente deseja excluir a empresa{" "}
-              <span className="company-name-modal">{record.name}</span> ?
-            </p>
+            {modalText}
           </Modal>
         </Flex>
       ),

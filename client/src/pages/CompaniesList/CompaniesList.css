@@ -46,3 +46,7 @@
   font-weight: 500;
   color: var(--primary);
 }
+
+.checkbox-group-wrapper.ant-form-item-has-error .ant-checkbox-wrapper {
+  color: #ff4d4f;
+}
