@@ -18,7 +18,7 @@ class ShippingRepository extends BaseRepository {
     });
   }
 
-  async update(id: string, data: Partial<IShippingResponse>) {
+  async update(id: string, data: Partial<IShippingCreateDTO>) {
     return await this.api.put<IShippingResponse>(`/shipping/${id}`, data);
   }
 

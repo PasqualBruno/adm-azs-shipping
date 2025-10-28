@@ -66,7 +66,7 @@ const useShipping = () => {
     }
   };
 
-  const edit = async (id: string, data: Partial<IShippingResponse>) => {
+  const edit = async (id: string, data: Partial<IShippingCreateDTO>) => {
     setLoadingAction(true);
     try {
       const response = await ShippingRepository.update(id, data);

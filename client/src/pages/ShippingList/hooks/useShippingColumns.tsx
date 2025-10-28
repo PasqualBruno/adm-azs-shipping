@@ -13,11 +13,13 @@ import { COLORS, estadoColors } from "../../../utils/colots";
 type UseShippingColumnsProps = {
   remove: (id: string) => Promise<void>;
   loadingAction: boolean;
+  onEditClick: (record: IShippingResponse) => void;
 };
 
 const useShippingColumns = ({
   remove,
   loadingAction,
+  onEditClick,
 }: UseShippingColumnsProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedShipping, setSelectedShipping] =
@@ -152,7 +154,7 @@ const useShippingColumns = ({
       render: (_, record: IShippingResponse) => (
         <Flex justify="center" gap={4}>
           <Tooltip title="Editar">
-            <Button type="text">
+            <Button type="text" onClick={() => onEditClick(record)}>
               <PencilSimpleLineIcon size={20} color={COLORS.primary} />
             </Button>
           </Tooltip>
