@@ -1,3 +1,5 @@
+import type { estadoFrete } from "../interfaces";
+
 export interface ILoginResponse {
   token: string;
   user: {
@@ -17,4 +19,16 @@ export interface ICompanyResponse {
   destino: boolean;
   distancia: boolean;
   archived: boolean;
+}
+
+export interface IShippingResponse {
+  _id: string;
+  company: ICompanyResponse;
+  estado: estadoFrete;
+  peso: number;
+  volume: number;
+  origem: string;
+  destino: string;
+  distancia: number;
+  tipoCarga: string;
 }

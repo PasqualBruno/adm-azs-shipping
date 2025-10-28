@@ -3,14 +3,7 @@ import {
   PencilSimpleLineIcon,
   TrashIcon,
 } from "@phosphor-icons/react";
-import {
-  Image as AntdImage,
-  Button,
-  Checkbox,
-  Flex,
-  Modal,
-  Tooltip,
-} from "antd";
+import { Avatar, Button, Checkbox, Flex, Modal, Tag, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { AxiosResponse } from "axios";
 import React, { useState } from "react";
@@ -70,6 +63,15 @@ const useCompaniesListColumns = ({
       width: 80,
       dataIndex: "id",
       key: "id",
+      render: (id: string, record: ICompanyResponse) => {
+        console.log(record);
+
+        return (
+          <Tag style={{ fontWeight: 500 }}>
+            COD-{record._id.substring(0, 8)}
+          </Tag>
+        );
+      },
     },
     {
       title: "Nome",
@@ -77,21 +79,9 @@ const useCompaniesListColumns = ({
       key: "name",
       width: 200,
       render: (_: any, record: ICompanyResponse) => {
-        console.log(record.image);
-
         return (
           <div className="company-cell">
-            {record.image && (
-              <AntdImage
-                height={40}
-                width={40}
-                fallback={"https://linkconsolidai.com.br/assets/imgs/empty.jpg"}
-                src={record.image}
-                alt={"Imagem da empresa " + record.name}
-                className="company-logo"
-                preview={false}
-              />
-            )}
+            {record.image && <Avatar src={record.image} />}
             <span className="company-name-table">{record.name}</span>
           </div>
         );
@@ -215,9 +205,11 @@ const useCompaniesListColumns = ({
             cancelText="Cancelar"
             open={open}
             title="Tem certeza"
-            onOk={() => {
-              if (modalMode === "archive") handleArchiveCompany(record._id!);
-              else if (modalMode === "remove") handleRemoveCompany(record._id!);
+            onOk={async () => {
+              if (modalMode === "archive")
+                await handleArchiveCompany(record._id!);
+              else if (modalMode === "remove")
+                await handleRemoveCompany(record._id!);
             }}
             onCancel={() => setOpen(false)}
             footer={(_, { OkBtn, CancelBtn }) => (

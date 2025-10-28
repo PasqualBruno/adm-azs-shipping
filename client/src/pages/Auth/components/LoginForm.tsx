@@ -22,8 +22,6 @@ const LoginForm = ({ setMode }: LoginFormProps) => {
   }
 
   async function handleLoginSubmit(values: IUserLoginDTO) {
-    console.log(values);
-
     try {
       await login(values.userName, values.password);
       form.resetFields();

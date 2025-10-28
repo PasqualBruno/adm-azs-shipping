@@ -4,7 +4,6 @@ import "./App.css";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import Auth from "./pages/Auth/Auth";
 import CompaniesList from "./pages/CompaniesList/CompaniesList";
-import FieldLIst from "./pages/FieldsList/FieldLIst";
 import FretesSystem from "./pages/FretesSystem/FretesSystem";
 import ShippingList from "./pages/ShippingList/ShippingList";
 
@@ -22,7 +21,6 @@ function App() {
           }
         >
           <Route path="empresas" element={<CompaniesList />} />
-          <Route path="campos" element={<FieldLIst />} />
           <Route path="fretes" element={<ShippingList />} />
         </Route>
       </Routes>

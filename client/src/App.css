@@ -21,3 +21,34 @@ body {
   color: white;
   width: 100%;
 }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.table-action-button {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-action-button span {
+  color: var(--primary);
+}
+
+.modal-identifier-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--primary);
+}
