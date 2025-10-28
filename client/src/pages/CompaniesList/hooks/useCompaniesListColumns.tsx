@@ -77,8 +77,6 @@ const useCompaniesListColumns = ({
       key: "name",
       width: 200,
       render: (_: any, record: ICompanyResponse) => {
-        console.log(record.image);
-
         return (
           <div className="company-cell">
             {record.image && (

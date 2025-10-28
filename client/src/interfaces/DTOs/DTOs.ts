@@ -1,3 +1,5 @@
+import type { estadoFrete } from "../interfaces";
+
 export interface IUserRegisterDTO {
   userName: string;
   name: string;
@@ -19,4 +21,15 @@ export interface ICompanyCreateDTO {
   destino: boolean;
   distancia: boolean;
   archived: boolean;
+}
+
+export interface IShippingCreateDTO {
+  company: string;
+  estado: estadoFrete;
+  peso: number;
+  volume: number;
+  origem: string;
+  destino: string;
+  distancia: number;
+  tipoCarga: string;
 }

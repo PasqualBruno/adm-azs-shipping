@@ -6,7 +6,6 @@ import {
   SignOutIcon,
   TruckIcon,
 } from "@phosphor-icons/react";
-import { MapPinIcon } from "@phosphor-icons/react/dist/ssr";
 import { Button, Drawer, Layout, Menu } from "antd";
 import { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -30,7 +29,6 @@ const FretesSystem = () => {
   };
 
   const menuItems = [
-    { key: "/sistema/campos", icon: <MapPinIcon size={20} />, label: "Campos" },
     {
       key: "/sistema/empresas",
       icon: <BuildingIcon size={20} />,

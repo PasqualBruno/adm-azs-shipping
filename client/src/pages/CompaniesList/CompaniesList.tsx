@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import type { ICompanyCreateDTO } from "../../interfaces/DTOs/DTOs";
-import { companyFormMode } from "../../interfaces/interfaces";
+import { formMode } from "../../interfaces/interfaces";
 import type { ICompanyResponse } from "../../interfaces/Responses/Responses";
 import "./CompaniesList.css";
 import useCompanies from "./hooks/useCompanies";
@@ -24,7 +24,7 @@ const CompaniesList = () => {
   const { create, update, loading, companies, fetchCompanies } = useCompanies();
 
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<companyFormMode>(companyFormMode.create);
+  const [mode, setMode] = useState<formMode>(formMode.create);
   const [form] = Form.useForm<ICompanyCreateDTO>();
 
   useEffect(() => {
@@ -41,9 +41,8 @@ const CompaniesList = () => {
   }
 
   async function handleEditClick(company: ICompanyResponse) {
-    console.log("company", company);
     setSelectedCompany(company);
-    setMode(companyFormMode.edit);
+    setMode(formMode.edit);
     setOpen(true);
     form.resetFields();
     form.setFieldsValue(company);
@@ -72,21 +71,19 @@ const CompaniesList = () => {
     }
 
     try {
-      console.log(normalizedValues);
-      if (mode === companyFormMode.create) {
+      if (mode === formMode.create) {
         await create(normalizedValues);
         form.resetFields();
         setOpen(false);
-        setMode(companyFormMode.create);
+        setMode(formMode.create);
         setSelectedCompany(undefined);
         toast.success("Empresa criada com sucesso!");
       } else {
-        console.log("selectedCompany?._id", selectedCompany?._id);
         if (!selectedCompany?._id) return;
         await update(selectedCompany?._id, normalizedValues);
         form.resetFields();
         setOpen(false);
-        setMode(companyFormMode.create);
+        setMode(formMode.create);
         setSelectedCompany(undefined);
         toast.success("Empresa editada com sucesso!");
       }
@@ -110,7 +107,7 @@ const CompaniesList = () => {
           type="primary"
           className="add-company-button"
           onClick={() => {
-            setMode(companyFormMode.create);
+            setMode(formMode.create);
             setOpen(true);
           }}
         >
@@ -140,10 +137,8 @@ const CompaniesList = () => {
 
       <Modal
         confirmLoading={loading}
-        title={
-          mode === companyFormMode.create ? "Criar Empresa" : "Editar Empresa"
-        }
-        okText={mode === companyFormMode.create ? "Adicionar" : "Salvar"}
+        title={mode === formMode.create ? "Criar Empresa" : "Editar Empresa"}
+        okText={mode === formMode.create ? "Adicionar" : "Salvar"}
         cancelText="Cancelar"
         open={open}
         onOk={handleOk}

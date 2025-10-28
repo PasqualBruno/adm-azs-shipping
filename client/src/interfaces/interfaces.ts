@@ -3,7 +3,7 @@ export enum formMode {
   register = "register",
 }
 
-export enum companyFormMode {
+export enum formMode {
   create = "create",
   edit = "edit",
 }
@@ -35,4 +35,13 @@ export interface ICompany {
 
 export interface IMessageOnlyResponse {
   message: string;
+}
+
+export enum estadoFrete {
+  PENDENTE = "Pendente",
+  CANCELADO = "Cancelado",
+  ENVIADO = "Enviado",
+  ENTREGUE = "Entregue",
+  APROVADO = "Aprovado",
+  REPROVADO = "Reprovado",
 }
