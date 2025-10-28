@@ -18,12 +18,7 @@ type ShippingFormProps = {
   loading: boolean;
 };
 
-const ShippingForm = ({
-  form,
-  onSuccess,
-  create,
-  loading, // 'loading' não está sendo usado no botão, mas é recebido
-}: ShippingFormProps) => {
+const ShippingForm = ({ form, onSuccess, create }: ShippingFormProps) => {
   const { companies, fetchCompanies } = useCompanies();
   const [selectedCompany, setSelectedCompany] = useState<ICompanyResponse>();
 

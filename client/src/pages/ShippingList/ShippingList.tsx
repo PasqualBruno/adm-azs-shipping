@@ -29,11 +29,9 @@ const ShippingList = () => {
   const [selectedShipping, setSelectedShipping] =
     useState<IShippingResponse | null>(null);
 
-  // Instâncias de formulário separadas
   const [createForm] = Form.useForm<IShippingCreateDTO>();
   const [editForm] = Form.useForm<IShippingCreateDTO>();
 
-  // Hook principal com as ações (assumindo que 'edit' espera Partial<IShippingCreateDTO>)
   const {
     shippings,
     fetchShipping,
@@ -44,13 +42,11 @@ const ShippingList = () => {
     remove,
   } = useShipping();
 
-  // Função de callback para o botão de editar (passada para as colunas)
   const handleEditClick = (record: IShippingResponse) => {
     setSelectedShipping(record);
     setIsEditModalOpen(true);
   };
 
-  // Passa as ações para o hook de colunas
   const { columns, confirmationModal } = useShippingColumns({
     remove,
     loadingAction,
@@ -61,7 +57,6 @@ const ShippingList = () => {
     fetchShipping();
   }, [fetchShipping]);
 
-  // Funções para fechar e limpar cada modal
   const handleCloseCreateModal = () => {
     setIsCreateModalOpen(false);
     createForm.resetFields();
@@ -104,7 +99,6 @@ const ShippingList = () => {
         </Flex>
       </Flex>
 
-      {/* --- Modal de CRIAÇÃO --- */}
       <Modal
         title="Adicionar Frete"
         onCancel={handleCloseCreateModal}
@@ -117,14 +111,13 @@ const ShippingList = () => {
         }}
       >
         <ShippingForm
-          form={createForm as FormInstance} // Cast para FormInstance genérico se necessário
+          form={createForm as FormInstance}
           onSuccess={handleCloseCreateModal}
           create={create}
           loading={loadingAction}
         />
       </Modal>
 
-      {/* --- Modal de EDIÇÃO --- */}
       <Modal
         title="Atualizar Frete"
         onCancel={handleCloseEditModal}
@@ -135,9 +128,8 @@ const ShippingList = () => {
         onOk={() => {
           editForm.submit();
         }}
-        destroyOnClose // Garante que o estado do form é resetado
+        destroyOnClose
       >
-        {/* Só renderiza o formulário de edição se houver um frete selecionado */}
         {selectedShipping && (
           <ShippingEditForm
             form={editForm as FormInstance}
@@ -149,7 +141,6 @@ const ShippingList = () => {
         )}
       </Modal>
 
-      {/* --- Tabela --- */}
       <Table
         loading={loadingFetch}
         scroll={{ x: 1000 }}
@@ -165,7 +156,6 @@ const ShippingList = () => {
         }}
       />
 
-      {/* --- Modal de Exclusão --- */}
       {confirmationModal}
     </div>
   );

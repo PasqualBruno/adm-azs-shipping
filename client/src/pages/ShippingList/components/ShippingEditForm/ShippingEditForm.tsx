@@ -22,7 +22,7 @@ const ShippingEditForm = ({
   form,
   onSuccess,
   edit,
-  loading,
+
   selectedShipping,
 }: ShippingEditFormProps) => {
   const { companies, fetchCompanies } = useCompanies();
@@ -104,7 +104,6 @@ const ShippingEditForm = ({
         </Select>
       </Form.Item>
 
-      {/* Campos condicionais (já virão preenchidos) */}
       {selectedCompany?.peso && (
         <Form.Item name="peso" label="Peso (kg)" required>
           <Input type="number" placeholder="Digite o peso" />
