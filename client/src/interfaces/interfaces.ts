@@ -45,3 +45,25 @@ export enum estadoFrete {
   APROVADO = "Aprovado",
   REPROVADO = "Reprovado",
 }
+
+export interface IPaginate<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface IPaginateOptions {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
+export interface IShippingFormValues {
+  peso?: number;
+  volume?: number;
+  origem?: string;
+  destino?: string;
+  distancia?: number;
+  tipoCarga?: string;
+}

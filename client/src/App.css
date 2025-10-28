@@ -46,3 +46,9 @@ body {
 .table-action-button span {
   color: var(--primary);
 }
+
+.modal-identifier-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--primary);
+}

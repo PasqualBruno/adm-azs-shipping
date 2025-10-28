@@ -6,7 +6,7 @@ import CompaniesRepository from "../../../repositories/CompaniesRepository";
 const useCompanies = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [companies, setCompanies] = useState<ICompanyCreateDTO[]>([]);
+  const [companies, setCompanies] = useState<ICompanyResponse[]>([]);
 
   async function fetchCompanies() {
     setLoading(true);

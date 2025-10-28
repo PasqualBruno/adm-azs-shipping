@@ -2,50 +2,51 @@ import { PencilSimpleLineIcon, TrashIcon } from "@phosphor-icons/react";
 import { Avatar, Button, Flex, Modal, Tag, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useState } from "react";
-
+import { toast } from "react-toastify";
 import { estadoFrete } from "../../../interfaces/interfaces";
 import type {
   ICompanyResponse,
   IShippingResponse,
 } from "../../../interfaces/Responses/Responses";
-import { COLORS } from "../../../utils/colots";
+import { COLORS, estadoColors } from "../../../utils/colots";
 
-const useShippingColumns = () => {
+type UseShippingColumnsProps = {
+  remove: (id: string) => Promise<void>;
+  loadingAction: boolean;
+};
+
+const useShippingColumns = ({
+  remove,
+  loadingAction,
+}: UseShippingColumnsProps) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectedShipping, setSelectedShipping] =
+    useState<IShippingResponse | null>(null);
 
-  const estadoColors: Record<estadoFrete, { bg: string; color: string }> = {
-    [estadoFrete.PENDENTE]: { bg: "#FFF7E6", color: "#FAAD14" },
-    [estadoFrete.CANCELADO]: { bg: "#FFF1F0", color: "#FF4D4F" },
-    [estadoFrete.ENVIADO]: { bg: "#E6FFFB", color: "#13C2C2" },
-    [estadoFrete.ENTREGUE]: { bg: "#F6FFED", color: "#52C41A" },
-    [estadoFrete.APROVADO]: { bg: "#E6F7FF", color: "#1890FF" },
-    [estadoFrete.REPROVADO]: { bg: "#FFF1F0", color: "#FF4D4F" },
+  const handleOpenModal = (record: IShippingResponse) => {
+    setSelectedShipping(record);
+    setModalOpen(true);
   };
 
-  const renderValue = (
-    value: any,
-    unit?: string,
-    isNumber: boolean = false
-  ) => {
-    if (value === null || value === undefined || value === false) {
-      return <div style={{ textAlign: "center" }}>-</div>;
-    }
-    if (isNumber) {
-      return (
-        <div style={{ textAlign: "center" }}>
-          {value.toLocaleString("pt-BR")}
-          {unit}
-        </div>
-      );
-    }
-    return (
-      <div style={{ textAlign: "center" }}>
-        {value}
-        {unit}
-      </div>
-    );
+  const handleCloseModal = () => {
+    setSelectedShipping(null);
+    setModalOpen(false);
   };
 
+  async function handleRemove() {
+    if (!selectedShipping) return;
+
+    try {
+      await remove(selectedShipping._id);
+      handleCloseModal();
+      toast.success("Frete removido com sucesso!");
+    } catch (error: any) {
+      console.error("Erro ao remover frete:", error);
+      toast.error(error.response?.data?.message || "Erro ao remover frete.");
+    }
+  }
+
+  // Definição das colunas da tabela
   const columns: ColumnsType<IShippingResponse> = [
     {
       title: "Código",
@@ -54,7 +55,9 @@ const useShippingColumns = () => {
       width: 100,
       render: (id: string) =>
         renderValue(
-          id ? `COD${id.substring(id.length - 3).toUpperCase()}` : null
+          <Tag style={{ fontWeight: 500 }}>
+            {id ? `COD${id.substring(id.length - 3).toUpperCase()}` : null}
+          </Tag>
         ),
     },
     {
@@ -62,9 +65,10 @@ const useShippingColumns = () => {
       dataIndex: "company",
       key: "company",
       width: 300,
+      ellipsis: true,
       render: (company: ICompanyResponse) =>
         company ? (
-          <Flex align="center" gap={4}>
+          <Flex align="center" gap={16}>
             <Avatar src={company.image} />
             <span>{company.name}</span>
           </Flex>
@@ -145,7 +149,7 @@ const useShippingColumns = () => {
       width: 140,
       fixed: "right",
       key: "acoes",
-      render: () => (
+      render: (_, record: IShippingResponse) => (
         <Flex justify="center" gap={4}>
           <Tooltip title="Editar">
             <Button type="text">
@@ -153,17 +157,65 @@ const useShippingColumns = () => {
             </Button>
           </Tooltip>
           <Tooltip title="Remover">
-            <Button type="text">
+            <Button type="text" onClick={() => handleOpenModal(record)}>
               <TrashIcon size={20} color={COLORS.primary} />
             </Button>
           </Tooltip>
-          <Modal open={modalOpen} title="Tem certeza"></Modal>
         </Flex>
       ),
     },
   ];
 
-  return { columns };
+  const confirmationModal = (
+    <Modal
+      confirmLoading={loadingAction}
+      onCancel={handleCloseModal}
+      open={modalOpen}
+      title="Tem certeza?"
+      okText="Remover"
+      cancelText="Cancelar"
+      onOk={handleRemove}
+    >
+      {selectedShipping && (
+        <Flex vertical>
+          <span>
+            Deseja remover o frete de código{" "}
+            <span className="modal-identifier-text">
+              {`COD${selectedShipping._id
+                .substring(selectedShipping._id.length - 3)
+                .toUpperCase()}`}
+            </span>
+            ?
+          </span>
+          <span className=" opacity-50">
+            Essa ação irá remover permanentemente o frete.
+          </span>
+        </Flex>
+      )}
+    </Modal>
+  );
+
+  return { columns, confirmationModal };
 };
 
 export default useShippingColumns;
+
+const renderValue = (value: any, unit?: string, isNumber: boolean = false) => {
+  if (value === null || value === undefined || value === false) {
+    return <div style={{ textAlign: "center" }}>-</div>;
+  }
+  if (isNumber) {
+    return (
+      <div style={{ textAlign: "center" }}>
+        {value.toLocaleString("pt-BR")}
+        {unit}
+      </div>
+    );
+  }
+  return (
+    <div style={{ textAlign: "center" }}>
+      {value}
+      {unit}
+    </div>
+  );
+};

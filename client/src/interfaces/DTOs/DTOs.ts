@@ -26,6 +26,7 @@ export interface ICompanyCreateDTO {
 export interface IShippingCreateDTO {
   company: string;
   estado: estadoFrete;
+
   peso: number;
   volume: number;
   origem: string;
