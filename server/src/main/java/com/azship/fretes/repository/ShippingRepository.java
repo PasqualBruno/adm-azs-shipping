@@ -5,5 +5,5 @@ import com.azship.fretes.model.Shipping;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ShippingRepository extends MongoRepository<Shipping, String> {
-
+boolean existsByCompany(String companyId);
 }
