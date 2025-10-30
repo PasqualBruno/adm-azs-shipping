@@ -7,6 +7,7 @@ import com.azship.fretes.dto.LoginResponse;
 import com.azship.fretes.dto.RegisterRequest;
 import com.azship.fretes.model.User;
 import com.azship.fretes.repository.UserRepository;
+import org.springframework.context.annotation.Lazy; // 1. IMPORTE ISSO
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,15 +18,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
+    // Tudo aqui volta ao normal (com 'final')
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager; // 1. INJETE
-    private final JwtService jwtService; // 2. INJETE
-    private final UserDetailsServiceImpl userDetailsService; // 3. INJETE
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final UserDetailsServiceImpl userDetailsService;
 
+    // 2. VOLTAMOS AO CONSTRUTOR DE 5 ARGUMENTOS
+    // MAS ADICIONAMOS @Lazy NA FRENTE DO PASSWORDENCODER
     public AuthService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       AuthenticationManager authenticationManager, // 4. ATUALIZE O CONSTRUTOR
+                       @Lazy PasswordEncoder passwordEncoder, // <-- ESTA É A CORREÇÃO
+                       AuthenticationManager authenticationManager,
                        JwtService jwtService,
                        UserDetailsServiceImpl userDetailsService) {
         this.userRepository = userRepository;
@@ -40,33 +44,32 @@ public class AuthService {
      * (Este método você já tem)
      */
     public void register(RegisterRequest registerRequest) {
+
+
+
+
         if (userRepository.findByUserName(registerRequest.getUserName()).isPresent()) {
             throw new RuntimeException("Usuário já cadastrado.");
         }
         String hashedPassword = passwordEncoder.encode(registerRequest.getPassword());
         User newUser = new User();
+
         newUser.setUserName(registerRequest.getUserName());
         newUser.setName(registerRequest.getName());
         newUser.setPassword(hashedPassword);
+        System.out.println("Usuário cadastrado: " + newUser.getUserName());
         userRepository.save(newUser);
     }
 
     /**
-     * 5. ADICIONE ESTE NOVO MÉTODO
      * Lógica para autenticar um usuário e retornar um token.
-     * Substitui a lógica do seu endpoint POST /api/login
+     * (Este método você já tem)
      */
     public LoginResponse login(LoginRequest loginRequest) {
-        // if (!userName || !password) { ... }
-        // A validação será feita no DTO.
 
-        // Esta linha substitui o:
-        // const user = await User.findOne({ userName });
-        // const isPasswordValid = await bcrypt.compare(password, user.password);
-        //
-        // O manager vai chamar o seu UserDetailsServiceImpl
-        // e o PasswordEncoder automaticamente.
-        // Se a senha ou usuário estiverem errados, ele lança uma exceção.
+        System.out.println("Usuario " + loginRequest.getUserName());
+        System.out.println("Senha " +loginRequest.getPassword());
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUserName(),
@@ -74,24 +77,20 @@ public class AuthService {
                 )
         );
 
-        // Se chegou aqui, o usuário está autenticado.
-        // const userPayload = { userId: user._id, userName: user.userName };
-        // const token = jwt.sign(userPayload, JWT_SECRET, { expiresIn: "1h" });
-        // Usamos o UserDetails para gerar o token
+        System.out.println("Authentication: " + authentication);
         UserDetails userDetails = userDetailsService
                 .loadUserByUsername(loginRequest.getUserName());
 
+        System.out.println("UserDetails: " + userDetails);
+
+
         String token = jwtService.generateToken(userDetails);
 
-        // Para replicar sua resposta:
-        // res.json({ ..., user: { id: user._id, name: user.name } });
-        // Precisamos buscar o usuário no banco para pegar o ID e o Nome.
         User user = userRepository.findByUserName(loginRequest.getUserName())
                 .orElseThrow(() -> new RuntimeException("Erro ao buscar dados do usuário após login."));
 
-        // Monta a resposta
         LoginResponse.UserInfo userInfo = new LoginResponse.UserInfo(
-                user.getId(),
+                user.get_id(),
                 user.getName()
         );
 

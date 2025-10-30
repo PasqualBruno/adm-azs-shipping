@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Company {
 
     @Id
-    private String id;
+    private String _id;
 
     private String name; // Campo obrigatório no seu POST
     private String image; // Campo obrigatório no seu POST

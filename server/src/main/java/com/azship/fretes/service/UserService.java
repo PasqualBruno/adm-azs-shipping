@@ -28,6 +28,9 @@ public class UserService {
             userName = principal.toString();
         }
 
+        System.out.println("Tentando autenticar: " + userName);
+
+
         User user = userRepository.findByUserName(userName)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado no banco de dados."));
 

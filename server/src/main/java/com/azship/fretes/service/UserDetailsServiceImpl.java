@@ -27,6 +27,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("Usuário não encontrado: " + userName)
                 );
+
+        System.out.println("Hash da senha no banco: " + user.getPassword());
         // Converte o nosso 'User' do model para o 'User' que o Spring Security entende
         return new User(user.getUserName(), user.getPassword(), new ArrayList<>());
     }

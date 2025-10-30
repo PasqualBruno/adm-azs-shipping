@@ -14,7 +14,7 @@ public class UserResponse {
 
     // Construtor que converte a entidade User para este DTO
     public UserResponse(User user) {
-        this.id = user.getId();
+        this.id = user.get_id();
         this.userName = user.getUserName();
         this.name = user.getName();
     }

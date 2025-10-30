@@ -21,7 +21,7 @@ const useCompaniesListColumns = ({
   handleEditClick,
   fetchCompanies,
 }: useCompaniesListColumnsProps) => {
-  const { remove, update } = useCompanies();
+  const { remove, archive } = useCompanies();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalMode, setModalMode] = useState<"remove" | "archive">("remove");
@@ -30,7 +30,7 @@ const useCompaniesListColumns = ({
   async function handleArchiveCompany(id: string) {
     setLoading(true);
     try {
-      await update(id, { archived: true });
+      await archive(id);
       await fetchCompanies();
       toast.success("Empresa arquivada com sucesso!");
     } catch (err: any) {
@@ -63,9 +63,7 @@ const useCompaniesListColumns = ({
       width: 80,
       dataIndex: "id",
       key: "id",
-      render: (id: string, record: ICompanyResponse) => {
-        console.log(record);
-
+      render: (_id: string, record: ICompanyResponse) => {
         return (
           <Tag style={{ fontWeight: 500 }}>
             COD-{record._id.substring(0, 8)}

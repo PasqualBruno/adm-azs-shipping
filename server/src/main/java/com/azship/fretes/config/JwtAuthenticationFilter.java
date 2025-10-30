@@ -1,4 +1,3 @@
-// Local: src/main/java/com/azship/fretes/config/JwtAuthenticationFilter.java
 
 package com.azship.fretes.config;
 
@@ -29,36 +28,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
-    // Este método é o equivalente direto ao seu 'authenticateToken'
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        // const authHeader = req.headers["authorization"];
         final String authHeader = request.getHeader("Authorization");
 
-        // if (token == null) return res.sendStatus(401);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // const token = authHeader && authHeader.split(" ")[1];
         final String jwt = authHeader.substring(7);
 
-        // jwt.verify(token, JWT_SECRET, (err: any, userPayload: any) => { ... })
         final String userName = jwtService.extractUserName(jwt);
 
-        // Se o usuário já estiver autenticado, não fazemos nada
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
 
-            // Validamos o token
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                // req.user = userPayload;
-                // No Spring, fazemos isso:
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,
@@ -67,11 +57,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
-                // Autentica o usuário para esta requisição
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-        // next();
         filterChain.doFilter(request, response);
     }
 }

@@ -1,4 +1,12 @@
-import { Avatar, Flex, Form, Input, Select, type FormInstance } from "antd";
+import {
+  Avatar,
+  Flex,
+  Form,
+  Input,
+  Select,
+  Tag,
+  type FormInstance,
+} from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -9,6 +17,7 @@ import {
 } from "../../../../interfaces/interfaces";
 import type { ICompanyResponse } from "../../../../interfaces/Responses/Responses";
 
+import { estadoColors } from "../../../../utils/colots";
 import useCompanies from "../../../CompaniesList/hooks/useCompanies";
 
 type ShippingFormProps = {
@@ -24,6 +33,7 @@ const ShippingForm = ({ form, onSuccess, create }: ShippingFormProps) => {
 
   useEffect(() => {
     fetchCompanies();
+    form.setFieldsValue({ estado: estadoFrete.PENDENTE });
   }, []);
 
   async function handleSubmit(values: IShippingFormValues) {
@@ -34,7 +44,7 @@ const ShippingForm = ({ form, onSuccess, create }: ShippingFormProps) => {
 
     const payload: Partial<IShippingCreateDTO> = {
       company: selectedCompany._id,
-      estado: estadoFrete.PENDENTE,
+      estado: values.estado,
     };
 
     if (selectedCompany.peso) payload.peso = values.peso;
@@ -77,7 +87,36 @@ const ShippingForm = ({ form, onSuccess, create }: ShippingFormProps) => {
         </Select>
       </Form.Item>
 
-      {/* Campos condicionais */}
+      <Form.Item
+        name="estado"
+        label="Estado"
+        rules={[{ required: true, message: "Selecione o estado do frete" }]}
+      >
+        <Select placeholder="Selecione o estado">
+          {Object.values(estadoFrete).map((estado) => {
+            const colors = estadoColors[estado];
+            return (
+              <Select.Option key={estado} value={estado}>
+                <Tag
+                  style={{
+                    backgroundColor: colors.bg,
+                    color: colors.color,
+                    width: "100%",
+                    height: "100%",
+                    fontWeight: 500,
+                    textAlign: "center",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  {estado}
+                </Tag>
+              </Select.Option>
+            );
+          })}
+        </Select>
+      </Form.Item>
+
       {selectedCompany?.peso && (
         <Form.Item name="peso" label="Peso (kg)" required>
           <Input type="number" placeholder="Digite o peso" />
