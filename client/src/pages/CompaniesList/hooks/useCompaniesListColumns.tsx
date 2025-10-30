@@ -60,14 +60,12 @@ const useCompaniesListColumns = ({
   const columns: ColumnsType<any> = [
     {
       title: "Código",
-      width: 80,
+      width: 210,
       dataIndex: "id",
       key: "id",
       render: (_id: string, record: ICompanyResponse) => {
         return (
-          <Tag style={{ fontWeight: 500 }}>
-            COD-{record._id.substring(0, 8)}
-          </Tag>
+          <Tag style={{ fontWeight: 500 }}>{record._id.toUpperCase()}</Tag>
         );
       },
     },
@@ -95,7 +93,7 @@ const useCompaniesListColumns = ({
     },
     {
       title: "Volume",
-      width: 80,
+      width: 90,
       dataIndex: "volume",
       key: "volume",
       render: (value: boolean) => <Checkbox checked={value} disabled />,
@@ -110,7 +108,7 @@ const useCompaniesListColumns = ({
     },
     {
       title: "Destino",
-      width: 80,
+      width: 90,
       dataIndex: "destino",
       key: "destino",
       render: (value: boolean) => <Checkbox checked={value} disabled />,
@@ -124,14 +122,14 @@ const useCompaniesListColumns = ({
     },
     {
       title: "Tipo de Carga",
-      width: 120,
+      width: 140,
       dataIndex: "tipoCarga",
       key: "tipoCarga",
       render: (value: boolean) => <Checkbox checked={value} disabled />,
     },
     {
       title: "Ações",
-      width: 130,
+      width: 180,
       fixed: "right",
       key: "acoes",
       render: (_: any, record: ICompanyResponse) => (

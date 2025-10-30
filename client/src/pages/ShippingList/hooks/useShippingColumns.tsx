@@ -53,13 +53,11 @@ const useShippingColumns = ({
       title: "Código",
       dataIndex: "_id",
       key: "_id",
-      width: 130,
+      width: 220,
       render: (id: string, record) =>
         renderValue(
           <Tag style={{ fontWeight: 500 }}>
-            {id
-              ? `COD-${record._id ? `${record._id.substring(0, 8)}` : null}`
-              : null}
+            {id ? `${record._id ? `${record._id}` : null}` : null}
           </Tag>
         ),
     },
