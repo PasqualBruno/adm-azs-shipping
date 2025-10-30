@@ -10,4 +10,5 @@ public class FretesApplication {
 		SpringApplication.run(FretesApplication.class, args);
 	}
 
+
 }

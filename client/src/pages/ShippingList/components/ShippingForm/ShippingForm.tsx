@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Flex,
-  Form,
-  Input,
-  Select,
-  Tag,
-  type FormInstance,
-} from "antd";
+import { Avatar, Flex, Form, Input, Select, type FormInstance } from "antd";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -19,6 +11,7 @@ import type { ICompanyResponse } from "../../../../interfaces/Responses/Response
 
 import { estadoColors } from "../../../../utils/colots";
 import useCompanies from "../../../CompaniesList/hooks/useCompanies";
+import "../../ShippingList.css";
 
 type ShippingFormProps = {
   form: FormInstance;
@@ -73,6 +66,7 @@ const ShippingForm = ({ form, onSuccess, create }: ShippingFormProps) => {
         required
       >
         <Select
+          placeholder="Selecione uma empresa"
           onChange={(e) =>
             setSelectedCompany(companies.find((company) => company._id === e))
           }
@@ -97,20 +91,14 @@ const ShippingForm = ({ form, onSuccess, create }: ShippingFormProps) => {
             const colors = estadoColors[estado];
             return (
               <Select.Option key={estado} value={estado}>
-                <Tag
+                <span
+                  className="select-state-tag"
                   style={{
-                    backgroundColor: colors.bg,
                     color: colors.color,
-                    width: "100%",
-                    height: "100%",
-                    fontWeight: 500,
-                    textAlign: "center",
-                    display: "flex",
-                    justifyContent: "center",
                   }}
                 >
                   {estado}
-                </Tag>
+                </span>
               </Select.Option>
             );
           })}

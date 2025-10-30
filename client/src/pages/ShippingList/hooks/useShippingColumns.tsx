@@ -58,11 +58,7 @@ const useShippingColumns = ({
         renderValue(
           <Tag style={{ fontWeight: 500 }}>
             {id
-              ? `COD-${
-                  record._id
-                    ? `${record._id.substring(0, 8).toUpperCase()}`
-                    : null
-                }`
+              ? `COD-${record._id ? `${record._id.substring(0, 8)}` : null}`
               : null}
           </Tag>
         ),

@@ -8,7 +8,10 @@ import type {
 } from "../../../../interfaces/Responses/Responses";
 
 import type { IShippingCreateDTO } from "../../../../interfaces/DTOs/DTOs";
+import { estadoFrete } from "../../../../interfaces/interfaces";
+import { estadoColors } from "../../../../utils/colots";
 import useCompanies from "../../../CompaniesList/hooks/useCompanies";
+import "../../ShippingList.css";
 
 type ShippingEditFormProps = {
   form: FormInstance;
@@ -97,6 +100,30 @@ const ShippingEditForm = ({
               </Flex>
             </Select.Option>
           ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        name="estado"
+        label="Estado"
+        rules={[{ required: true, message: "Selecione o estado do frete" }]}
+      >
+        <Select placeholder="Selecione o estado">
+          {Object.values(estadoFrete).map((estado) => {
+            const colors = estadoColors[estado];
+            return (
+              <Select.Option key={estado} value={estado}>
+                <span
+                  className="select-state-tag"
+                  style={{
+                    color: colors.color,
+                  }}
+                >
+                  {estado}
+                </span>
+              </Select.Option>
+            );
+          })}
         </Select>
       </Form.Item>
 
