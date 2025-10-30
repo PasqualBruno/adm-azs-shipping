@@ -38,12 +38,10 @@ export interface IMessageOnlyResponse {
 }
 
 export enum estadoFrete {
-  PENDENTE = "Pendente",
-  CANCELADO = "Cancelado",
-  ENVIADO = "Enviado",
-  ENTREGUE = "Entregue",
-  APROVADO = "Aprovado",
-  REPROVADO = "Reprovado",
+  PENDENTE = "PENDENTE",
+  CANCELADO = "CANCELADO",
+  ENVIADO = "ENVIADO",
+  ENTREGUE = "ENTREGUE",
 }
 
 export interface IPaginate<T> {
@@ -66,4 +64,5 @@ export interface IShippingFormValues {
   destino?: string;
   distancia?: number;
   tipoCarga?: string;
+  estado: estadoFrete;
 }

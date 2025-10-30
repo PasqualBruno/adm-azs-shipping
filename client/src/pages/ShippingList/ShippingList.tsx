@@ -137,7 +137,7 @@ const ShippingList = () => {
         onOk={() => {
           editForm.submit();
         }}
-        destroyOnClose
+        destroyOnHidden
       >
         {selectedShipping && (
           <ShippingEditForm
@@ -151,6 +151,7 @@ const ShippingList = () => {
       </Modal>
 
       <Table
+        rowKey="_id"
         loading={loadingFetch}
         scroll={{ x: 1000 }}
         columns={columns}
