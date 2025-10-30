@@ -34,32 +34,25 @@ public class ShippingService {
         this.mongoTemplate = mongoTemplate;
     }
 
-    // ==========================================================
-    // Listagem com join em company e paginação
-    // ==========================================================
     public PaginatedResponse<ShippingResponse> listShippings(int page, int limit, String search) {
 
         List<AggregationOperation> aggregationOps = new ArrayList<>();
 
-        // 1. ADICIONE ESTA ETAPA PRIMEIRO
         aggregationOps.add(context -> new org.bson.Document("$addFields",
                 new org.bson.Document("company_oid",
                         new org.bson.Document("$convert",
                                 new org.bson.Document("input", "$company")
                                         .append("to", "objectId")
-                                        .append("onError", null) // Se falhar a conversão, fica nulo
-                                        .append("onNull", null)  // Se o campo for nulo, fica nulo
+                                        .append("onError", null)
+                                        .append("onNull", null)
                         )
                 )
-        ));
-
-        // Lookup completo da company
+        )));
 
         aggregationOps.add(Aggregation.lookup("companies", "company_oid", "_id", "companyDetails"));
-        aggregationOps.add(Aggregation.unwind("companyDetails", true)); // preserva shippings sem empresa
+        aggregationOps.add(Aggregation.unwind("companyDetails", true));
         aggregationOps.add(Aggregation.addFields().addField("company").withValue("$companyDetails").build());
 
-        // Projeta os campos finais
         aggregationOps.add(Aggregation.project()
                 .and("_id").as("id")
                 .and("estado").as("estado")
@@ -71,10 +64,9 @@ public class ShippingService {
                 .and("tipoCarga").as("tipoCarga")
                 .and("createdAt").as("createdAt")
                 .and("updatedAt").as("updatedAt")
-                .and("company").as("company") // agora é objeto Company
+                .and("company").as("company")
         );
 
-        // Filtro de busca
         if (search != null && !search.isEmpty()) {
             Pattern regex = Pattern.compile(search, Pattern.CASE_INSENSITIVE);
             List<Criteria> orFilter = new ArrayList<>();
@@ -102,84 +94,5 @@ public class ShippingService {
             aggregationOps.add(Aggregation.match(new Criteria().orOperator(orFilter)));
         }
 
-        // Contagem total
         List<AggregationOperation> countOps = new ArrayList<>(aggregationOps);
-        countOps.add(Aggregation.count().as("total"));
-        Aggregation countAgg = Aggregation.newAggregation(countOps);
-        long total = Optional.ofNullable(
-                        mongoTemplate.aggregate(countAgg, "shippings", TotalCount.class)
-                                .getUniqueMappedResult()
-                )
-                .map(TotalCount::getTotal)
-                .orElse(0L);
-
-        // Paginação
-        long skip = (long) (page - 1) * limit;
-        aggregationOps.add(Aggregation.sort(Sort.Direction.DESC, "createdAt"));
-        aggregationOps.add(Aggregation.skip(skip));
-        aggregationOps.add(Aggregation.limit(limit));
-        Aggregation dataAgg = Aggregation.newAggregation(aggregationOps);
-
-        List<ShippingResponse> shippings = mongoTemplate.aggregate(dataAgg, "shippings", ShippingResponse.class)
-                .getMappedResults();
-
-        return new PaginatedResponse<>(
-                shippings,
-                total,
-                page,
-                (int) Math.ceil((double) total / limit)
-        );
-    }
-
-    private static class TotalCount {
-        private long total;
-        public long getTotal() { return total; }
-        public void setTotal(long total) { this.total = total; }
-    }
-
-    // ==========================================================
-    // CRUD Básico
-    // ==========================================================
-    public Shipping createShipping(ShippingRequest request) {
-        if (request.getCompany() == null || request.getEstado() == null) {
-            throw new RuntimeException("Campos 'company' e 'estado' obrigatórios");
-        }
-        if (!companyRepository.existsById(request.getCompany())) {
-            throw new RuntimeException("Empresa não encontrada");
-        }
-        Shipping s = new Shipping();
-        s.setCompany(request.getCompany()); // salva ID
-        s.setEstado(request.getEstado());
-        s.setPeso(request.getPeso());
-        s.setVolume(request.getVolume());
-        s.setOrigem(request.getOrigem());
-        s.setDestino(request.getDestino());
-        s.setDistancia(request.getDistancia());
-        s.setTipoCarga(request.getTipoCarga());
-        return shippingRepository.save(s);
-    }
-
-    public Optional<Shipping> updateShipping(String id, ShippingRequest request) {
-        Optional<Shipping> opt = shippingRepository.findById(id);
-        if (opt.isEmpty()) return Optional.empty();
-        if (request.getCompany() != null && !companyRepository.existsById(request.getCompany())) {
-            throw new RuntimeException("Empresa não encontrada");
-        }
-        Shipping s = opt.get();
-        s.setCompany(request.getCompany());
-        s.setEstado(request.getEstado());
-        s.setPeso(request.getPeso());
-        s.setVolume(request.getVolume());
-        s.setOrigem(request.getOrigem());
-        s.setDestino(request.getDestino());
-        s.setDistancia(request.getDistancia());
-        s.setTipoCarga(request.getTipoCarga());
-        return Optional.of(shippingRepository.save(s));
-    }
-
-    public boolean deleteShipping(String id) {
-        if (!shippingRepository.existsById(id)) return false;
-        shippingRepository.deleteById(id);
-        return true;
-    }
-}
+        countOps.add(A

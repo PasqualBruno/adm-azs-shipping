@@ -1,4 +1,4 @@
-// Local: src/main/java/com/azship/fretes/service/JwtService.java
+
 
 package com.azship.fretes.service;
 
@@ -23,7 +23,7 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    private long jwtExpirationMs = 3600000; // 1 hora
+    private long jwtExpirationMs = 3600000; 
 
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);

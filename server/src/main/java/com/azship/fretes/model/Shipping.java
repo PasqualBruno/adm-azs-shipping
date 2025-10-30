@@ -19,7 +19,6 @@ public class Shipping {
     @Id
     private String _id;
 
-    // Armazenamos o _id da company como String
     private String company;
 
     private EstadoFrete estado = EstadoFrete.PENDENTE;

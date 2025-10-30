@@ -1,4 +1,4 @@
-// Local: src/main/java/com/azship/fretes/model/User.java
+
 
 package com.azship.fretes.model;
 

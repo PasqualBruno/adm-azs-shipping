@@ -1,4 +1,3 @@
-// Local: src/main/java/com/azship/fretes/repository/ShippingRepository.java
 
 package com.azship.fretes.repository;
 

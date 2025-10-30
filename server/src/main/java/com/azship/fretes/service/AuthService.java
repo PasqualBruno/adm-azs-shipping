@@ -1,5 +1,3 @@
-// Local: src/main/java/com/azship/fretes/service/AuthService.java
-
 package com.azship.fretes.service;
 
 import com.azship.fretes.dto.LoginRequest;
@@ -7,7 +5,7 @@ import com.azship.fretes.dto.LoginResponse;
 import com.azship.fretes.dto.RegisterRequest;
 import com.azship.fretes.model.User;
 import com.azship.fretes.repository.UserRepository;
-import org.springframework.context.annotation.Lazy; // 1. IMPORTE ISSO
+import org.springframework.context.annotation.Lazy; 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,17 +16,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
-    // Tudo aqui volta ao normal (com 'final')
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserDetailsServiceImpl userDetailsService;
 
-    // 2. VOLTAMOS AO CONSTRUTOR DE 5 ARGUMENTOS
-    // MAS ADICIONAMOS @Lazy NA FRENTE DO PASSWORDENCODER
     public AuthService(UserRepository userRepository,
-                       @Lazy PasswordEncoder passwordEncoder, // <-- ESTA É A CORREÇÃO
+                       @Lazy PasswordEncoder passwordEncoder, 
                        AuthenticationManager authenticationManager,
                        JwtService jwtService,
                        UserDetailsServiceImpl userDetailsService) {
@@ -39,10 +34,7 @@ public class AuthService {
         this.userDetailsService = userDetailsService;
     }
 
-    /**
-     * Lógica para registrar um novo usuário.
-     * (Este método você já tem)
-     */
+
     public void register(RegisterRequest registerRequest) {
 
 
@@ -61,10 +53,6 @@ public class AuthService {
         userRepository.save(newUser);
     }
 
-    /**
-     * Lógica para autenticar um usuário e retornar um token.
-     * (Este método você já tem)
-     */
     public LoginResponse login(LoginRequest loginRequest) {
 
         System.out.println("Usuario " + loginRequest.getUserName());

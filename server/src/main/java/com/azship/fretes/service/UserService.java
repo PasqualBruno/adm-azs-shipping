@@ -1,4 +1,3 @@
-// Local: src/main/java/com/azship/fretes/service/UserService.java
 
 package com.azship.fretes.service;
 

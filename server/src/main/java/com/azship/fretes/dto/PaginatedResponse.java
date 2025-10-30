@@ -1,5 +1,3 @@
-// Local: src/main/java/com/azship/fretes/dto/PaginatedResponse.java
-
 package com.azship.fretes.dto;
 
 import lombok.AllArgsConstructor;

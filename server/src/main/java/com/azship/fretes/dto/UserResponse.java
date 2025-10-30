@@ -1,4 +1,3 @@
-// Local: src/main/java/com/azship/fretes/dto/UserResponse.java
 
 package com.azship.fretes.dto;
 
@@ -12,7 +11,6 @@ public class UserResponse {
     private String userName;
     private String name;
 
-    // Construtor que converte a entidade User para este DTO
     public UserResponse(User user) {
         this.id = user.get_id();
         this.userName = user.getUserName();
