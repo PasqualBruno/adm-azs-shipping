@@ -3,6 +3,7 @@ package com.azship.fretes.service;
 import com.azship.fretes.dto.CompanyRequest;
 import com.azship.fretes.model.Company;
 import com.azship.fretes.repository.CompanyRepository;
+import com.azship.fretes.repository.ShippingRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +13,11 @@ import java.util.Optional;
 public class CompanyService {
 
     private final CompanyRepository companyRepository;
+    private final ShippingRepository shippingRepository;
 
-    public CompanyService(CompanyRepository companyRepository) {
+    public CompanyService(CompanyRepository companyRepository, ShippingRepository shippingRepository) {
         this.companyRepository = companyRepository;
+        this.shippingRepository = shippingRepository;
     }
 
     public Company createCompany(CompanyRequest request) {
@@ -55,7 +58,14 @@ public class CompanyService {
     }
 
     public boolean deleteCompany(String id) {
-        if (!companyRepository.existsById(id)) return false;
+        if (!companyRepository.existsById(id)) {
+            throw new RuntimeException("Empresa com ID " + id + " não encontrada.");
+        }
+
+        if (shippingRepository.existsByCompany(id)) {
+            throw new RuntimeException("Não é possível excluir esta empresa, pois existem fretes associados a ela.");
+        }
+
         companyRepository.deleteById(id);
         return true;
     }
